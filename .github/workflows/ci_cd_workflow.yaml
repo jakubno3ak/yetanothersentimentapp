@@ -84,6 +84,23 @@ jobs:
           docker build -t $REPOSITORY:$IMAGE_TAG .
           docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Delete stack if in rollback state
+        run: |
+          STATUS=$(aws cloudformation describe-stacks \
+            --stack-name sentiment-app-stack \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Stacks[0].StackStatus' \
+            --output text 2>/dev/null || echo "NOT_FOUND")
+
+          echo "Current stack status: $STATUS"
+
+          case "$STATUS" in
+            *ROLLBACK* )
+              aws cloudformation delete-stack --stack-name sentiment-app-stack --region ${{ env.AWS_REGION }}
+              aws cloudformation wait stack-delete-complete --stack-name sentiment-app-stack --region ${{ env.AWS_REGION }}
+              ;;
+          esac
           
       - name: Resolve Lambda role ARN from name
         id: lambda_role
