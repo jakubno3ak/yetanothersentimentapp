@@ -1,7 +1,7 @@
 from cleantext import clean
 
 
-class TextProcessor:    
+class TextProcessor:
     @staticmethod
     def clean_text(text: str) -> str:
         return clean(
@@ -21,5 +21,5 @@ class TextProcessor:
             replace_with_url="",
             replace_with_email="",
             replace_with_phone_number="",
-            lang="en"
+            lang="en",
         )

@@ -1,7 +1,7 @@
 import os
 from settings import Settings
 import torch
-from transformers import AutoTokenizer, AutoModel, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModel
 
 
 # Wrapper to include Mean Pooling in the ONNX graph

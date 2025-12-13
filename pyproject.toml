@@ -11,6 +11,9 @@ dev = [
     "clean-text>=0.6.0",
     "gdown>=5.2.0",
     "pre-commit>=4.0.0",
+    "ruff>=0.8.2",
+    "pytest>=8.3.4",
+    "mypy>=1.18.0",
 ]
 integration = [
     "pytest>=8.3.4",

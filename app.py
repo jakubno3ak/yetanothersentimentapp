@@ -8,8 +8,9 @@ app = FastAPI()
 model = SentimentModel(
     tokenizer_path="model/tokenizer.json",
     onnx_model_path="model/model.onnx",
-    classifier_path="model/classifier.joblib"
+    classifier_path="model/classifier.joblib",
 )
+
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(request: PredictRequest):
