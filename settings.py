@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    s3_bucket_name: str = "mlops-lab11-models-kubano"
+    s3_bucket_name: str = "mlops-lab11-models-kubanowak"
     model_path: str = "model/sentence_transformer.model"
     tokenizer_path: str = "model/sentence_transformer.model"
     onnx_model_path: str = "model"
