@@ -69,10 +69,8 @@ def download_artifacts(settings=settings):
 
     # download sentence_transformer folder
     sentence_transformer_prefix = "sentence_transformer.model/"
-    local_model_dir = os.path.dirname(settings.model_path)
-    os.makedirs(local_model_dir, exist_ok=True)
+    os.makedirs(settings.model_path, exist_ok=True)
     
     download_folder(s3, bucket_name, sentence_transformer_prefix, local_model_dir)
 
     print("Download complete.")
-    
