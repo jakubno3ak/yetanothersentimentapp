@@ -2,6 +2,7 @@ import argparse
 from settings import settings
 from src.scripts.download_model_artifacts import download_artifacts
 from src.scripts.export_sentence_transformer_to_onnx import export_model_to_onnx
+from src.scripts.export_classifier_to_onnx import export_classifier_to_onnx
 
 
 def main():
@@ -22,6 +23,7 @@ def main():
             download_artifacts(settings)
         case "export":
             export_model_to_onnx(settings)
+            export_classifier_to_onnx(settings)
 
 
 if __name__ == "__main__":
