@@ -1,7 +1,7 @@
 [project]
-name = "sentiment-app"
+name = "yetanothersentimentapp"
 version = "0.1.0"
-description = "Sentiment Analysis App for MLOps Course"
+description = "Yet Another Sentiment App"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []

@@ -209,6 +209,7 @@ __marimo__/
 
 # Models - are stored on AWS s3
 model/*
+model.zip
 
 # Cache
 .mypy_cache
