@@ -1,3 +1,4 @@
+from mangum import Mangum
 from fastapi import FastAPI
 
 from src.app.models import PredictRequest, PredictResponse
@@ -17,3 +18,5 @@ model = SentimentModel(
 def predict(request: PredictRequest):
     label = model.predict(request.text)
     return PredictResponse(prediction=label)
+
+handler = Mangum(app)
