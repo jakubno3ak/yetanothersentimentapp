@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from src.app.models import PredictRequest, PredictResponse
-from src.inference.sentiment_model import SentimentModel
+from src.app.inference.sentiment_model import SentimentModel
 
 app = FastAPI()
 
