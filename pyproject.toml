@@ -1,0 +1,42 @@
+[project]
+name = "sentiment-app"
+version = "0.1.0"
+description = "Sentiment Analysis App for MLOps Course"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "clean-text>=0.6.0",
+    "gdown>=5.2.0",
+]
+integration = [
+    "pytest>=8.3.4",
+    "ruff>=0.8.2",
+]
+deployment = [
+    "boto3>=1.35.81",
+    "transformers>=4.47.0",
+    "torch>=2.5.1",
+    "uv>=0.5.8",
+    "onnxscript>=0.1.0",
+    "pydantic-settings>=2.7.1",
+]
+inference = [
+    "fastapi>=0.115.6",
+    "uvicorn>=0.32.1",
+    "onnxruntime>=1.20.1",
+    "joblib>=1.4.2",
+    "scikit-learn>=1.5.0",
+    "tokenizers>=0.21.0",
+    "pydantic>=2.10.3",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }

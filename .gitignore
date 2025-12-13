@@ -205,3 +205,11 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# Models - are stored on AWS s3
+model/*
+
+# Cache
+.mypy_cache
+.ruff_cache
