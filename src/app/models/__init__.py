@@ -1,0 +1,2 @@
+from .predict_request import PredictRequest
+from .predict_response import PredictResponse

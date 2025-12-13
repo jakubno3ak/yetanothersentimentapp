@@ -1,7 +1,7 @@
 import argparse
 from settings import settings
-from src.scripts.download_artifacts_sim import download_artifacts
-from src.scripts.export_model_to_onnx import export_model_to_onnx
+from src.scripts.download_model_artifacts import download_artifacts
+from src.scripts.export_sentence_transformer_to_onnx import export_model_to_onnx
 
 
 def main():

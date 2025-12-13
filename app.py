@@ -5,7 +5,7 @@ import onnxruntime as ort
 from fastapi import FastAPI
 from tokenizers import Tokenizer
 
-from models import PredictRequest, PredictResponse
+from src.app.models import PredictRequest, PredictResponse
 
 SENTIMENT_MAP = {0: "negative", 1: "neutral", 2: "positive"}
 

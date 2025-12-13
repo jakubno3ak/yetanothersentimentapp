@@ -10,6 +10,10 @@ uv sync
 2. Install gdown:
 ```bash
 pip install gdown
+
+or 
+
+uv add gdown
 ```
 
 3. Download the model to the root directory of the application:
