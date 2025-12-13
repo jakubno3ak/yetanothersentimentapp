@@ -84,36 +84,19 @@ jobs:
           docker build -t $REPOSITORY:$IMAGE_TAG .
           docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          echo "IMAGE_URI=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
           
-      - name: Install AWS SAM CLI
+      - name: Deploy with AWS SAM
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
-          unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
-          sudo ./sam-installation/install
-          
-      # - name: Deploy with AWS SAM
-      #   env:
-      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     REPOSITORY: ${{ env.ECR_REPOSITORY }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: |
-      #     sam deploy \
-      #       --template-file template.yaml \
-      #       --stack-name sentiment-app-stack \
-      #       --image-repository $REGISTRY/$REPOSITORY \
-      #       --parameter-overrides ImageUri=$REGISTRY/$REPOSITORY:$IMAGE_TAG \
-      #       --capabilities CAPABILITY_IAM \
-      #       --no-confirm-changeset \
-      #       --no-fail-on-empty-changeset \
-      #       --region ${{ env.AWS_REGION }}
-            
-      # - name: Get API Gateway URL
-      #   run: |
-      #     API_URL=$(aws cloudformation describe-stacks \
-      #       --stack-name sentiment-app-stack \
-      #       --region ${{ env.AWS_REGION }} \
-      #       --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
-      #       --output text)
-      #     echo "API URL: $API_URL"
-      #     echo "API_URL=$API_URL" >> $GITHUB_ENV
+          sam deploy \
+            --template-file template.yaml \
+            --stack-name sentiment-app-stack \
+            --image-repository $REGISTRY/$REPOSITORY \
+            --parameter-overrides ImageUri=$REGISTRY/$REPOSITORY:$IMAGE_TAG \
+            --capabilities CAPABILITY_IAM \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --region ${{ env.AWS_REGION }}
