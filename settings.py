@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     onnx_model_path: str = "model"
     onnx_model_name: str = "model.onnx"
     classifier_path: str = "model/classifier.joblib"
+    onnx_classifier_path: str = "model/classifier.onnx"
+    embedding_dim: int = 384
 
 
 settings = Settings()
