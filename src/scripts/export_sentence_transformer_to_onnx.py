@@ -53,13 +53,14 @@ def export_model_to_onnx(settings: Settings):
             (inputs["input_ids"], inputs.get("attention_mask")),
             onnx_path,
             input_names=["input_ids", "attention_mask"],
-            output_names=["sentence_embedding"],  # Pooled embedding (Batch, Hidden)
+            output_names=["sentence_embedding"],  # pooled embedding (Batch, Hidden)
             dynamic_axes={
                 "input_ids": {0: "batch_size", 1: "sequence"},
                 "attention_mask": {0: "batch_size", 1: "sequence"},
                 "sentence_embedding": {0: "batch_size"},
             },
             opset_version=18,
+            dynamo=False,
         )
 
     tokenizer.save_pretrained(settings.onnx_model_path)

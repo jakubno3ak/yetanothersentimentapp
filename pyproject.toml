@@ -28,7 +28,7 @@ deployment = [
     "onnxscript>=0.1.0",
     "pydantic-settings>=2.7.1",
     "skl2onnx>=1.18.0",
-    "scikit-learn>=1.5.0",
+    "scikit-learn>=1.7.2",
     "joblib>=1.4.2",
 ]
 inference = [
