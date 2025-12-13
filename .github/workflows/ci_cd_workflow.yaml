@@ -1,0 +1,119 @@
+name: CI/CD workflow
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: sentiment-app-onnx
+  S3_BUCKET: mlops-lab11-models-kubano
+
+jobs:
+  integration:
+    name: checks_and_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code repo
+        uses: actions/checkout@v4
+        
+      - name: Setup uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        
+      - name: Install integration dependencies
+        run: uv sync --frozen --group integration --no-install-project
+        
+      - name: Run ruff check
+        run: uv run ruff check .
+        
+      - name: Run pytest
+        run: uv run pytest tests
+
+  deployment:
+    name: build_and_deploy
+    runs-on: ubuntu-latest
+    needs: integration
+    steps:
+      - name: Checkout code repo
+        uses: actions/checkout@v4
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Setup uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        
+      - name: Add uv to PATH
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        
+      - name: Install deployment dependencies
+        run: uv sync --frozen --group deployment --no-install-project
+        
+      - name: Download model artifacts from S3
+        run: |
+          uv run python main.py --script download
+        env:
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          
+      - name: Export model to ONNX
+        run: |
+          uv run python main.py --script export
+          
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
+          
+      - name: Build and Push Docker image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REPOSITORY:$IMAGE_TAG .
+          docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "IMAGE_URI=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+          
+      - name: Install AWS SAM CLI
+        run: |
+          wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+          unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+          sudo ./sam-installation/install
+          
+      # - name: Deploy with AWS SAM
+      #   env:
+      #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REPOSITORY: ${{ env.ECR_REPOSITORY }}
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     sam deploy \
+      #       --template-file template.yaml \
+      #       --stack-name sentiment-app-stack \
+      #       --image-repository $REGISTRY/$REPOSITORY \
+      #       --parameter-overrides ImageUri=$REGISTRY/$REPOSITORY:$IMAGE_TAG \
+      #       --capabilities CAPABILITY_IAM \
+      #       --no-confirm-changeset \
+      #       --no-fail-on-empty-changeset \
+      #       --region ${{ env.AWS_REGION }}
+            
+      # - name: Get API Gateway URL
+      #   run: |
+      #     API_URL=$(aws cloudformation describe-stacks \
+      #       --stack-name sentiment-app-stack \
+      #       --region ${{ env.AWS_REGION }} \
+      #       --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
+      #       --output text)
+      #     echo "API URL: $API_URL"
+      #     echo "API_URL=$API_URL" >> $GITHUB_ENV
