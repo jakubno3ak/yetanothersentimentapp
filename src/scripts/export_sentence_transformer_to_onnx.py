@@ -34,8 +34,8 @@ class SentenceEmbeddingModel(torch.nn.Module):
 
 def export_model_to_onnx(settings: Settings):
     # Use AutoModel to get embeddings (not classification logits)
-    base_model = AutoModel.from_pretrained(settings.model_path)
-    tokenizer = AutoTokenizer.from_pretrained(settings.tokenizer_path)
+    base_model = AutoModel.from_pretrained(settings.sentence_transformer_dir)
+    tokenizer = AutoTokenizer.from_pretrained(settings.sentence_transformer_dir)
 
     # Wrap model
     model = SentenceEmbeddingModel(base_model)
@@ -44,8 +44,8 @@ def export_model_to_onnx(settings: Settings):
     dummy_text = "This is a sample input for ONNX export."
     inputs = tokenizer(dummy_text, return_tensors="pt")
 
-    onnx_path = os.path.join(settings.onnx_model_path, settings.onnx_model_name)
-    os.makedirs(settings.onnx_model_path, exist_ok=True)
+    onnx_path = settings.onnx_embedding_model_path
+    os.makedirs(os.path.dirname(onnx_path), exist_ok=True)
 
     with torch.no_grad():
         torch.onnx.export(
@@ -63,7 +63,7 @@ def export_model_to_onnx(settings: Settings):
             dynamo=False,
         )
 
-    tokenizer.save_pretrained(settings.onnx_model_path)
+    tokenizer.save_pretrained(os.path.dirname(settings.onnx_tokenizer_path))
 
     print(f"ONNX model exported to {onnx_path}")
     return onnx_path

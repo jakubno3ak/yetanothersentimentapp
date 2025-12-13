@@ -6,8 +6,8 @@ from settings import Settings
 
 
 def export_classifier_to_onnx(settings: Settings):
-    print(f"Loading classifier from {settings.classifier_path}...")
-    classifier = joblib.load(settings.classifier_path)
+    print(f"Loading classifier from {settings.classifier_joblib_path}...")
+    classifier = joblib.load(settings.classifier_joblib_path)
 
     # fefine input shape: (batch_size, embedding_dim)
     initial_type = [("float_input", FloatTensorType([None, settings.embedding_dim]))]

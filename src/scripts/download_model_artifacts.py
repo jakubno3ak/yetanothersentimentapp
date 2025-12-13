@@ -59,17 +59,17 @@ def download_artifacts(settings=settings):
 
     print(f"Downloading artifacts from bucket: {bucket_name}")
 
-    os.makedirs(settings.onnx_model_path, exist_ok=True)
+    os.makedirs(settings.model_dir, exist_ok=True)
 
     # download classifier file
     classifier_key = "classifier.joblib"
-    local_classifier_path = settings.classifier_path
+    local_classifier_path = settings.classifier_joblib_path
 
     try_download_file(s3, bucket_name, classifier_key, local_classifier_path)
 
     # download sentence_transformer folder
     sentence_transformer_prefix = "sentence_transformer.model/"
-    local_model_dir = settings.model_path
+    local_model_dir = settings.sentence_transformer_dir
     os.makedirs(local_model_dir, exist_ok=True)
     
     download_folder(s3, bucket_name, sentence_transformer_prefix, local_model_dir)
