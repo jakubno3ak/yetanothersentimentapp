@@ -1,5 +1,3 @@
-import pytest
-
 from settings import Settings
 
 

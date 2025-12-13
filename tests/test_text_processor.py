@@ -1,5 +1,3 @@
-import pytest
-
 from src.app.inference.text_processor import TextProcessor
 
 
