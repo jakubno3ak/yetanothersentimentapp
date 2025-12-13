@@ -10,6 +10,7 @@ dependencies = []
 dev = [
     "clean-text>=0.6.0",
     "gdown>=5.2.0",
+    "pre-commit>=4.0.0",
 ]
 integration = [
     "pytest>=8.3.4",
