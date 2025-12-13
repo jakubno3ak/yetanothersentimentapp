@@ -1640,6 +1640,7 @@ inference = [
     { name = "uvicorn" },
 ]
 integration = [
+    { name = "pydantic-settings" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -1676,6 +1677,7 @@ inference = [
     { name = "uvicorn", specifier = ">=0.32.1" },
 ]
 integration = [
+    { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "ruff", specifier = ">=0.8.2" },
 ]

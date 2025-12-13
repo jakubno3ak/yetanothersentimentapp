@@ -16,6 +16,7 @@ dev = [
     "mypy>=1.18.0",
 ]
 integration = [
+    "pydantic-settings>=2.7.1",
     "pytest>=8.3.4",
     "ruff>=0.8.2",
 ]
